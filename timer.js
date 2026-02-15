@@ -2,7 +2,7 @@
  * CONFIGURATION
  * Set the retroactive start date ONCE here for initial load.
  ************************************************************/
-const RETRO_START_TIME = new Date("2026-02-14T02:00:00Z").getTime();
+const RETRO_START_TIME = new Date("2026-02-15T02:00:00Z").getTime();
 const STORAGE_KEY = "retroTimerStart";
 
 /************************************************************
