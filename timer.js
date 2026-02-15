@@ -1,15 +1,12 @@
 /************************************************************
  * CONFIGURATION
- * Set the retroactive start date ONCE here.
- * The timer will always measure time since this moment.
+ * Set the retroactive start date ONCE here for initial load.
  ************************************************************/
 const RETRO_START_TIME = new Date("2026-02-14T02:00:00Z").getTime();
 const STORAGE_KEY = "retroTimerStart";
 
 /************************************************************
  * TEST PAGE CREATION (TEST DEPLOY ONLY)
- * This section creates a simple UI so the timer can run
- * standalone without any HTML file changes.
  ************************************************************/
 
 // Basic page styling
@@ -39,11 +36,10 @@ document.body.appendChild(resetBtn);
 
 /************************************************************
  * TIMER STATE INITIALIZATION
- * - Timer NEVER starts at page load
+ * - Timer never starts from page load
  * - Uses stored value if available
  * - Otherwise falls back to RETRO_START_TIME
  ************************************************************/
-
 let startTime = localStorage.getItem(STORAGE_KEY);
 
 if (!startTime) {
@@ -55,9 +51,7 @@ if (!startTime) {
 
 /************************************************************
  * TIMER UPDATE LOGIC
- * Calculates days / hours / minutes since startTime
  ************************************************************/
-
 function updateCounter() {
   const diff = Date.now() - startTime;
 
@@ -72,14 +66,12 @@ function updateCounter() {
 
 /************************************************************
  * RESET HANDLER
- * Resets the timer back to the original retroactive start
- * and persists the reset.
+ * Resets the timer to the current date and persists it.
  ************************************************************/
-
 function resetTimer() {
-  if (!confirm("Reset the timer back to the original start date?")) return;
+  if (!confirm("Reset the timer to the current time?")) return;
 
-  startTime = RETRO_START_TIME;
+  startTime = Date.now();
   localStorage.setItem(STORAGE_KEY, startTime);
   updateCounter();
 }
@@ -87,8 +79,6 @@ function resetTimer() {
 /************************************************************
  * START TIMER
  ************************************************************/
-
 updateCounter();
 setInterval(updateCounter, 1000);
 resetBtn.addEventListener("click", resetTimer);
-
