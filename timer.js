@@ -1,10 +1,18 @@
-/*************************************************
- * TEST PAGE SETUP (ONLY FOR TEST DEPLOY)
- * Everything in this section exists only
- * to create a temporary test webpage
- *************************************************/
+/************************************************************
+ * CONFIGURATION
+ * Set the retroactive start date ONCE here.
+ * The timer will always measure time since this moment.
+ ************************************************************/
+const RETRO_START_TIME = new Date("2026-01-01T00:00:00Z").getTime();
+const STORAGE_KEY = "retroTimerStart";
 
-// Create page styling
+/************************************************************
+ * TEST PAGE CREATION (TEST DEPLOY ONLY)
+ * This section creates a simple UI so the timer can run
+ * standalone without any HTML file changes.
+ ************************************************************/
+
+// Basic page styling
 document.body.style.margin = "0";
 document.body.style.fontFamily = "Arial, sans-serif";
 document.body.style.display = "flex";
@@ -14,38 +22,42 @@ document.body.style.justifyContent = "center";
 document.body.style.height = "100vh";
 document.body.style.background = "#f4f4f4";
 
-// Create counter display
+// Timer display
 const counterEl = document.createElement("div");
 counterEl.id = "timeCounter";
 counterEl.style.fontSize = "2rem";
 counterEl.style.marginBottom = "20px";
-counterEl.textContent = "0d 00h 00m";
 document.body.appendChild(counterEl);
 
-// Create reset button
+// Reset button
 const resetBtn = document.createElement("button");
-resetBtn.textContent = "Reset";
+resetBtn.textContent = "Reset Timer";
 resetBtn.style.padding = "10px 20px";
 resetBtn.style.fontSize = "1rem";
 resetBtn.style.cursor = "pointer";
 document.body.appendChild(resetBtn);
 
-/*************************************************
- * TIMER LOGIC (REAL FUNCTIONAL CODE)
- * This is the part you'd keep for production
- *************************************************/
+/************************************************************
+ * TIMER STATE INITIALIZATION
+ * - Timer NEVER starts at page load
+ * - Uses stored value if available
+ * - Otherwise falls back to RETRO_START_TIME
+ ************************************************************/
 
-// Load or initialize start time
-let startTime = localStorage.getItem("startTime");
+let startTime = localStorage.getItem(STORAGE_KEY);
 
 if (!startTime) {
-  startTime = Date.now();
-  localStorage.setItem("startTime", startTime);
+  startTime = RETRO_START_TIME;
+  localStorage.setItem(STORAGE_KEY, startTime);
 } else {
   startTime = Number(startTime);
 }
 
-// Update counter
+/************************************************************
+ * TIMER UPDATE LOGIC
+ * Calculates days / hours / minutes since startTime
+ ************************************************************/
+
 function updateCounter() {
   const diff = Date.now() - startTime;
 
@@ -58,19 +70,25 @@ function updateCounter() {
     `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m`;
 }
 
-// Reset counter with confirmation
-function resetCounter() {
-  const confirmed = confirm("Reset the timer?");
-  if (!confirmed) return;
+/************************************************************
+ * RESET HANDLER
+ * Resets the timer back to the original retroactive start
+ * and persists the reset.
+ ************************************************************/
 
-  startTime = Date.now();
-  localStorage.setItem("startTime", startTime);
+function resetTimer() {
+  if (!confirm("Reset the timer back to the original start date?")) return;
+
+  startTime = RETRO_START_TIME;
+  localStorage.setItem(STORAGE_KEY, startTime);
   updateCounter();
 }
 
-// Start timer
+/************************************************************
+ * START TIMER
+ ************************************************************/
+
 updateCounter();
 setInterval(updateCounter, 1000);
+resetBtn.addEventListener("click", resetTimer);
 
-// Button listener
-resetBtn.addEventListener("click", resetCounter);
