@@ -3,7 +3,7 @@
  * Set the retroactive start date ONCE here.
  * The timer will always measure time since this moment.
  ************************************************************/
-const RETRO_START_TIME = new Date("2026-01-01T00:00:00Z").getTime();
+const RETRO_START_TIME = new Date("2026-02-14T02:00:00Z").getTime();
 const STORAGE_KEY = "retroTimerStart";
 
 /************************************************************
